@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package spot_instrument_service_v1;
+
+import "spot_instrument_service_messages.proto";
+option go_package = "github.com/ewik2k21/grpc-hard/pkg";
+
+service SpotInstrumentService {
+  rpc ViewMarkets(ViewMarketsRequest) returns (ViewMarketsResponse);
+}

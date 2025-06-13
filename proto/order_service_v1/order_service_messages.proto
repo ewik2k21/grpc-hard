@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package order_service_v1;
+
+option go_package = "github.com/ewik2k21/grpc-hard/pkg";
+
+message GetOrderStatusRequest {
+  string order_id = 1;
+  string user_id = 2;
+}
+
+message GetOrderStatusResponse {
+  Status status = 1;
+}
+
+
+message CreateOrderRequest {
+
+}
+
+message  CreateOrderResponse {
+
+}
+
+enum Status {
+  CREATED = 0;
+  PROCESSING = 1;
+  PROCESSED = 2;
+}

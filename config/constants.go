@@ -1,5 +1,5 @@
 package config
 
 const (
-	grpcPort = "GRPC_PORT"
+	GrpcPort = "GRPC_PORT"
 )

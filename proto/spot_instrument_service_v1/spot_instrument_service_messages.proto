@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package spot_instrument_service_v1;
+
+option go_package = "github.com/ewik2k21/grpc-hard/pkg";
+
+
+message ViewMarketsRequest{
+  UserRoles userRole = 1;
+}
+
+
+
+message ViewMarketsResponse {
+  repeated Market market = 1;
+}
+
+message Market {
+//TODO fill fields
+}
+
+enum UserRoles {
+  USER = 0;
+  MODER = 1;
+  ADMIN = 2;
+}
