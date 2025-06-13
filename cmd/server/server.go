@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
-	"log"
+	"log/slog"
 	"net"
 	"os"
 	"os/signal"
@@ -19,7 +19,7 @@ import (
 
 const bufSize = 1024 * 1024
 
-func Execute() {
+func Execute(logger *slog.Logger) {
 	config.LoadConfig()
 	lis := bufconn.Listen(bufSize)
 
@@ -38,7 +38,8 @@ func Execute() {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		log.Fatalf("failed to create conn: %v", err)
+		logger.Error("failed to create conn: %v", slog.String("error", err.Error()))
+		os.Exit(1)
 	}
 	defer conn.Close()
 
@@ -49,23 +50,25 @@ func Execute() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		log.Println("start grpc server")
+		logger.Info("start grpc server")
+
 		if err := grpcServer.Serve(lis); err != nil {
-			log.Fatalf("grpc server not started: %v", err)
+			logger.Error("grpc server not started", slog.String("error", err.Error()))
 		}
 	}()
 
 	lis2, err := net.Listen("tcp", os.Getenv(config.GrpcPort))
 	if err != nil {
-		log.Fatalf("faile to lis tcp: %v", err)
+		logger.Error("failed to lis tcp", slog.String("error", err.Error()))
+		os.Exit(1)
 	}
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		log.Println("start tcp server")
+		logger.Info("start tcp server")
 		if err := grpcServer.Serve(lis2); err != nil {
-			log.Fatalf("tcp server not started: %v", err)
+			logger.Error("tcp server not started", slog.String("error", err.Error()))
 		}
 	}()
 
@@ -73,12 +76,12 @@ func Execute() {
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
 	<-stop
-	log.Println("received shutdown signal, start graceful shutdown")
+	logger.Info("received shutdown signal, start graceful shutdown")
 
 	grpcServer.GracefulStop()
-	log.Println("server stopped")
+	logger.Info("server stopped")
 
 	wg.Wait()
-	log.Println("all stopped")
+	logger.Info("all stopped")
 
 }
