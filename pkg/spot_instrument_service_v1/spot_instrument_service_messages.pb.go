@@ -23,6 +23,7 @@ const (
 
 type ViewMarketsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserRole      string                 `protobuf:"bytes,1,opt,name=userRole,proto3" json:"userRole,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -57,8 +58,16 @@ func (*ViewMarketsRequest) Descriptor() ([]byte, []int) {
 	return file_spot_instrument_service_messages_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *ViewMarketsRequest) GetUserRole() string {
+	if x != nil {
+		return x.UserRole
+	}
+	return ""
+}
+
 type ViewMarketsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Markets       []*Market              `protobuf:"bytes,1,rep,name=markets,proto3" json:"markets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -93,13 +102,77 @@ func (*ViewMarketsResponse) Descriptor() ([]byte, []int) {
 	return file_spot_instrument_service_messages_proto_rawDescGZIP(), []int{1}
 }
 
+func (x *ViewMarketsResponse) GetMarkets() []*Market {
+	if x != nil {
+		return x.Markets
+	}
+	return nil
+}
+
+type Market struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Market) Reset() {
+	*x = Market{}
+	mi := &file_spot_instrument_service_messages_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Market) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Market) ProtoMessage() {}
+
+func (x *Market) ProtoReflect() protoreflect.Message {
+	mi := &file_spot_instrument_service_messages_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Market.ProtoReflect.Descriptor instead.
+func (*Market) Descriptor() ([]byte, []int) {
+	return file_spot_instrument_service_messages_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Market) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Market) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 var File_spot_instrument_service_messages_proto protoreflect.FileDescriptor
 
 const file_spot_instrument_service_messages_proto_rawDesc = "" +
 	"\n" +
-	"&spot_instrument_service_messages.proto\x12\x1aspot_instrument_service_v1\"\x14\n" +
-	"\x12ViewMarketsRequest\"\x15\n" +
-	"\x13ViewMarketsResponseB#Z!github.com/ewik2k21/grpc-hard/pkgb\x06proto3"
+	"&spot_instrument_service_messages.proto\x12\x1aspot_instrument_service_v1\"0\n" +
+	"\x12ViewMarketsRequest\x12\x1a\n" +
+	"\buserRole\x18\x01 \x01(\tR\buserRole\"S\n" +
+	"\x13ViewMarketsResponse\x12<\n" +
+	"\amarkets\x18\x01 \x03(\v2\".spot_instrument_service_v1.MarketR\amarkets\",\n" +
+	"\x06Market\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04nameB#Z!github.com/ewik2k21/grpc-hard/pkgb\x06proto3"
 
 var (
 	file_spot_instrument_service_messages_proto_rawDescOnce sync.Once
@@ -113,17 +186,19 @@ func file_spot_instrument_service_messages_proto_rawDescGZIP() []byte {
 	return file_spot_instrument_service_messages_proto_rawDescData
 }
 
-var file_spot_instrument_service_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_spot_instrument_service_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_spot_instrument_service_messages_proto_goTypes = []any{
 	(*ViewMarketsRequest)(nil),  // 0: spot_instrument_service_v1.ViewMarketsRequest
 	(*ViewMarketsResponse)(nil), // 1: spot_instrument_service_v1.ViewMarketsResponse
+	(*Market)(nil),              // 2: spot_instrument_service_v1.Market
 }
 var file_spot_instrument_service_messages_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: spot_instrument_service_v1.ViewMarketsResponse.markets:type_name -> spot_instrument_service_v1.Market
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_spot_instrument_service_messages_proto_init() }
@@ -137,7 +212,7 @@ func file_spot_instrument_service_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_spot_instrument_service_messages_proto_rawDesc), len(file_spot_instrument_service_messages_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

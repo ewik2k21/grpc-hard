@@ -1,20 +1,47 @@
 package handlers
 
 import (
+	"context"
+	"github.com/ewik2k21/grpc-hard/internal/services"
 	order "github.com/ewik2k21/grpc-hard/pkg/order_service_v1"
 	spotInstrument "github.com/ewik2k21/grpc-hard/pkg/spot_instrument_service_v1"
+	"log/slog"
 )
 
 type OrderHandler struct {
 	order.UnimplementedOrderServiceServer
-	Client spotInstrument.SpotInstrumentServiceClient
+	Client  spotInstrument.SpotInstrumentServiceClient
+	service services.OrderService
+	logger  *slog.Logger
 	//todo add service
 }
 
-func NewOrderHandler() *OrderHandler {
-	return &OrderHandler{}
+func NewOrderHandler(logger *slog.Logger, service services.OrderService) *OrderHandler {
+	return &OrderHandler{
+		logger:  logger,
+		service: service,
+	}
 }
 
-//func (h *OrderHandler) CreateOrder(ctx context.Context, request *order.CreateOrderRequest) (*order.CreateOrderResponse, error) {
-//
-//}
+func (h *OrderHandler) CreateOrder(ctx context.Context, request *order.CreateOrderRequest) (*order.CreateOrderResponse, error) {
+	userRole := request.GetUserRole()
+	resp, err := h.Client.ViewMarkets(
+		context.Background(),
+		&spotInstrument.ViewMarketsRequest{
+			UserRole: userRole,
+		})
+	if err != nil {
+		return nil, err
+	}
+
+	orderId, status, err := h.service.CreateOrder(resp, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return &order.CreateOrderResponse{
+		OrderId: orderId,
+		Status:  *status,
+	}, nil
+
+}

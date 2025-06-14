@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/ewik2k21/grpc-hard/config"
 	"github.com/ewik2k21/grpc-hard/internal/handlers"
+	"github.com/ewik2k21/grpc-hard/internal/repositories"
+	"github.com/ewik2k21/grpc-hard/internal/services"
 	order "github.com/ewik2k21/grpc-hard/pkg/order_service_v1"
 	spotInstrument "github.com/ewik2k21/grpc-hard/pkg/spot_instrument_service_v1"
 	"google.golang.org/grpc"
@@ -24,8 +26,14 @@ func Execute(logger *slog.Logger) {
 	lis := bufconn.Listen(bufSize)
 
 	grpcServer := grpc.NewServer()
-	orderHandler := handlers.NewOrderHandler()
-	spotInstrumentHandler := handlers.NewSpotInstrumentHandler()
+
+	orderRepo := repositories.NewOrderRepository(logger)
+	orderService := services.NewOrderService(*orderRepo, logger)
+	orderHandler := handlers.NewOrderHandler(logger, *orderService)
+
+	spotInstrumentRepo := repositories.NewSpotInstrumentRepository(logger)
+	spotInstrumentService := services.NewSpotInstrumentService(*spotInstrumentRepo, logger)
+	spotInstrumentHandler := handlers.NewSpotInstrumentHandler(*spotInstrumentService, logger)
 	order.RegisterOrderServiceServer(grpcServer, orderHandler)
 	spotInstrument.RegisterSpotInstrumentServiceServer(grpcServer, spotInstrumentHandler)
 
