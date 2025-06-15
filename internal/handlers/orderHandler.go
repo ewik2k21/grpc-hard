@@ -45,3 +45,17 @@ func (h *OrderHandler) CreateOrder(ctx context.Context, request *order.CreateOrd
 	}, nil
 
 }
+
+func (h *OrderHandler) GetOrderStatus(ctx context.Context, req *order.GetOrderStatusRequest) (*order.GetOrderStatusResponse, error) {
+	userId := req.GetUserId()
+	orderId := req.GetOrderId()
+
+	status, err := h.service.GetOrderStatus(userId, orderId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &order.GetOrderStatusResponse{
+		Status: *status,
+	}, nil
+}

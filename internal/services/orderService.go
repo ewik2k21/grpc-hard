@@ -55,3 +55,25 @@ func (s *OrderService) CreateOrder(resp *pkg.ViewMarketsResponse, request *order
 	return orderId.String(), status, nil
 
 }
+
+func (s *OrderService) GetOrderStatus(userIdString, orderIdString string) (*order.Status, error) {
+	userId, err := uuid.Parse(userIdString)
+	if err != nil {
+		s.logger.Error("failed parse userId", slog.String("error", err.Error()))
+		return nil, err
+	}
+	orderId, err := uuid.Parse(orderIdString)
+	if err != nil {
+		s.logger.Error("failed parse orderId", slog.String("error", err.Error()))
+		return nil, err
+	}
+
+	status, err := s.repo.GetOrderStatus(userId, orderId)
+	if err != nil {
+		s.logger.Error("error get order status from repo", slog.String("error", err.Error()))
+		return nil, err
+	}
+
+	return status, nil
+
+}
