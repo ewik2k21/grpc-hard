@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/ewik2k21/grpc-hard/config"
 	"github.com/ewik2k21/grpc-hard/internal/handlers"
+	"github.com/ewik2k21/grpc-hard/internal/interceptors/loggerInterceptor"
 	x_request_id "github.com/ewik2k21/grpc-hard/internal/interceptors/x-request-id"
 	"github.com/ewik2k21/grpc-hard/internal/repositories"
 	"github.com/ewik2k21/grpc-hard/internal/services"
@@ -27,7 +28,10 @@ func Execute(logger *slog.Logger) {
 	lis := bufconn.Listen(bufSize)
 
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(x_request_id.UnaryRequestIDInterceptor()),
+		grpc.ChainUnaryInterceptor(
+			x_request_id.RequestIDInterceptor(),
+			loggerInterceptor.LoggerRequestInterceptor(logger),
+		),
 	)
 
 	orderRepo := repositories.NewOrderRepository(logger)

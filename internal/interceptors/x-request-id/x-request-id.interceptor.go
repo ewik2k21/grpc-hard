@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-func UnaryRequestIDInterceptor() grpc.UnaryServerInterceptor {
+func RequestIDInterceptor() grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context,
 		req any,
@@ -27,7 +27,7 @@ func UnaryRequestIDInterceptor() grpc.UnaryServerInterceptor {
 
 		if requestID == "" {
 			requestID = uuid.New().String()
-			//md = md.Copy()
+			md = md.Copy()
 			md.Set("x-request-id", requestID)
 		}
 
