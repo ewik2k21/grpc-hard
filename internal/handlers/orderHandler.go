@@ -24,6 +24,7 @@ func NewOrderHandler(logger *slog.Logger, service services.OrderService) *OrderH
 }
 
 func (h *OrderHandler) CreateOrder(ctx context.Context, request *order.CreateOrderRequest) (*order.CreateOrderResponse, error) {
+
 	userRole := request.GetUserRole()
 	resp, err := h.Client.ViewMarkets(
 		context.Background(),
@@ -47,6 +48,7 @@ func (h *OrderHandler) CreateOrder(ctx context.Context, request *order.CreateOrd
 }
 
 func (h *OrderHandler) GetOrderStatus(ctx context.Context, req *order.GetOrderStatusRequest) (*order.GetOrderStatusResponse, error) {
+
 	userId := req.GetUserId()
 	orderId := req.GetOrderId()
 
