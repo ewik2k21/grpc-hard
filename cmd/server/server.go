@@ -5,6 +5,7 @@ import (
 	"github.com/ewik2k21/grpc-hard/config"
 	"github.com/ewik2k21/grpc-hard/internal/handlers"
 	"github.com/ewik2k21/grpc-hard/internal/interceptors/loggerInterceptor"
+	"github.com/ewik2k21/grpc-hard/internal/interceptors/panicRecoveryInterceptor"
 	x_request_id "github.com/ewik2k21/grpc-hard/internal/interceptors/x-request-id"
 	"github.com/ewik2k21/grpc-hard/internal/repositories"
 	"github.com/ewik2k21/grpc-hard/internal/services"
@@ -31,6 +32,7 @@ func Execute(logger *slog.Logger) {
 		grpc.ChainUnaryInterceptor(
 			x_request_id.RequestIDInterceptor(),
 			loggerInterceptor.LoggerRequestInterceptor(logger),
+			panicRecoveryInterceptor.UnaryPanicRecoveryInterceptor(logger),
 		),
 	)
 

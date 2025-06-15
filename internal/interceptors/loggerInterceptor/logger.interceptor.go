@@ -36,7 +36,7 @@ func LoggerRequestInterceptor(logger *slog.Logger) grpc.UnaryServerInterceptor {
 		logger.Info("Received grpc request",
 			slog.String("method", info.FullMethod),
 			slog.String("x-request-id", requestID),
-			slog.String("start_time", start.String()),
+			slog.Time("start_time", start),
 		)
 
 		resp, err = handler(ctx, req)
@@ -45,7 +45,7 @@ func LoggerRequestInterceptor(logger *slog.Logger) grpc.UnaryServerInterceptor {
 		logger.Info("Complete grpc request",
 			slog.String("method", info.FullMethod),
 			slog.String("x-request-id", requestID),
-			slog.String("duration", duration.String()),
+			slog.Any("duration", duration),
 		)
 
 		return resp, err
