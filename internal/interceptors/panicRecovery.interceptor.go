@@ -1,4 +1,4 @@
-package panicRecoveryInterceptor
+package interceptors
 
 import (
 	"context"

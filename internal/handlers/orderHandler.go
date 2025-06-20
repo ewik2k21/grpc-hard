@@ -5,6 +5,7 @@ import (
 	"github.com/ewik2k21/grpc-hard/internal/services"
 	order "github.com/ewik2k21/grpc-hard/pkg/order_service_v1"
 	spotInstrument "github.com/ewik2k21/grpc-hard/pkg/spot_instrument_service_v1"
+	"github.com/redis/go-redis/v9"
 	"log/slog"
 )
 
@@ -16,10 +17,14 @@ type OrderHandler struct {
 	//todo add service
 }
 
-func NewOrderHandler(logger *slog.Logger, service services.OrderService) *OrderHandler {
+func NewOrderHandler(
+	logger *slog.Logger,
+	service *services.OrderService,
+	redisClient *redis.Client,
+) *OrderHandler {
 	return &OrderHandler{
 		logger:  logger,
-		service: service,
+		service: *service,
 	}
 }
 

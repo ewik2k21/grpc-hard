@@ -1,4 +1,4 @@
-package x_request_id
+package interceptors
 
 import (
 	"context"

@@ -1,4 +1,4 @@
-package loggerInterceptor
+package interceptors
 
 import (
 	"context"
